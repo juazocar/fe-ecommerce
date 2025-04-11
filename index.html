@@ -151,6 +151,20 @@
                 alert('¡Compra realizada con éxito!');
                 carrito.length = 0;
                 actualizarCarrito();
+
+                // Crear formulario HTML que haga POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = response.url;
+
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = 'token_ws'; // este es el nombre que espera WebPay
+                tokenInput.value = response.token;
+                form.appendChild(tokenInput);
+
+                document.body.appendChild(form);
+                form.submit(); 
             },
             error: function(xhr, status, error) {
                 console.error('Error al registrar la venta:', error);
