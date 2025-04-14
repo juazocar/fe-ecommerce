@@ -53,13 +53,33 @@
         $('#resultadoPago').html('<div class="alert alert-danger">Token no válido.</div>');
         return;
       }
+      confirmTransaction(token);
+    });
 
+    function confirmTransaction(token){
       $.ajax({
-        url: 'http://localhost:8181/webpay/confirm',
+        url: 'http://localhost:8181/sales/sale/transaction/confirm',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ token_ws: token }),
+        data: JSON.stringify({ token: token }),
         success: function (data) {
+          getTransaction(token);
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+          $('#resultadoPago').html('<div class="alert alert-danger">Hubo un error al verificar el pago.</div>');
+        }
+      });
+    }
+
+    function getTransaction(token){
+      $.ajax({
+        url: 'http://localhost:8181/sales/sale/transaction/query',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ token: token }),
+        success: function (data) {
+          console.log(data);
           if (data.status === 'AUTHORIZED') {
             $('#resultadoPago').html(`
               <div class="alert alert-success">
@@ -87,7 +107,7 @@
           $('#resultadoPago').html('<div class="alert alert-danger">Hubo un error al verificar el pago.</div>');
         }
       });
-    });
+    }
   </script>
 
 </body>
